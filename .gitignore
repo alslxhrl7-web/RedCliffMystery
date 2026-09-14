@@ -1,0 +1,95 @@
+# ---------------------------------------------------------------------------
+# Unity 프로젝트용 .gitignore
+# 기준: https://github.com/github/gitignore/blob/main/Unity.gitignore (공식 템플릿)
+# + IDE / OS 잡파일 관련 항목 추가
+# 이 파일은 반드시 Unity 프로젝트 루트(= .git이 있는 폴더, Assets와 같은 위치)에 있어야 합니다.
+# ---------------------------------------------------------------------------
+
+.utmp/
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+*.log
+
+# MemoryCaptures는 용량이 커지고 민감한 데이터를 포함할 수 있음
+/[Mm]emoryCaptures/
+
+# Recordings도 용량이 커질 수 있음
+/[Rr]ecordings/
+
+# 에셋 스토어 도구 플러그인을 무시하려면 주석 해제
+# /[Aa]ssets/AssetStoreTools*
+
+# JetBrains Rider 플러그인 자동 생성 파일
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Visual Studio 캐시 폴더
+.vs/
+
+# Gradle 캐시 폴더
+.gradle/
+
+# 자동 생성되는 VS/MD/Consulo 솔루션 및 프로젝트 파일
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity3D 자동 생성 meta 파일
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# 크래시 리포트 시 Unity3D가 생성하는 파일
+sysinfo.txt
+
+# 빌드 결과물
+*.apk
+*.aab
+*.unitypackage
+*.unitypackage.meta
+*.app
+
+# Crashlytics 자동 생성 파일
+crashlytics-build.properties
+
+# 패킹된 Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# 임시 자동 생성 Android 에셋
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# ---------------------------------------------------------------------------
+# 아래는 원본 Unity 템플릿에는 없지만, 실제 협업/업로드 시 문제를 줄이기 위해 추가한 항목
+# ---------------------------------------------------------------------------
+
+# JetBrains Rider / VSCode 로컬 설정 (사람마다 달라서 저장소에 넣지 않는 게 일반적)
+.idea/
+.vscode/
+
+# macOS / Windows 탐색기가 자동으로 만드는 잡파일
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# 병합 충돌 시 생기는 임시 파일
+*.orig

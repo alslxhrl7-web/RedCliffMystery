@@ -1,0 +1,69 @@
+# ---------------------------------------------------------------------------
+# Unity 프로젝트용 .gitattributes
+# 이 파일도 .gitignore와 같은 위치(프로젝트 루트, .git 옆)에 있어야 합니다.
+# ---------------------------------------------------------------------------
+
+# 기본: 텍스트 파일은 자동 인식해서 줄바꿈을 LF로 통일 (Windows/Mac 협업 시 줄바꿈 때문에
+# 파일 전체가 변경된 것처럼 보이는 문제를 방지)
+* text=auto eol=lf
+
+# C# 스크립트는 명시적으로 텍스트로 취급하고, GitHub에서 C# 전용 diff 하이라이팅 사용
+*.cs text diff=csharp
+
+# Unity가 만드는 YAML 기반 에셋들 — 텍스트로 다루되, 충돌이 나면 Unity의 스마트 병합 도구를
+# 쓰도록 표시해둡니다. (실제로 동작하려면 Unity Editor에 포함된 UnityYAMLMerge를
+# git의 mergetool로 한 번 등록해야 합니다: Unity 공식 문서 "Smart merge" 참고)
+*.unity     text merge=unityyamlmerge eol=lf
+*.prefab    text merge=unityyamlmerge eol=lf
+*.asset     text merge=unityyamlmerge eol=lf
+*.meta      text merge=unityyamlmerge eol=lf
+*.mat       text merge=unityyamlmerge eol=lf
+*.anim      text merge=unityyamlmerge eol=lf
+*.controller text merge=unityyamlmerge eol=lf
+*.physicMaterial text merge=unityyamlmerge eol=lf
+*.physicsMaterial2D text merge=unityyamlmerge eol=lf
+
+# ---------------------------------------------------------------------------
+# Git LFS: 용량이 큰 바이너리 에셋을 LFS로 관리 (GitHub의 "파일 하나당 100MB 초과" 업로드
+# 오류를 예방하기 위한 항목입니다. 사용하려면 아래 준비가 필요합니다.
+#   1) https://git-lfs.com 에서 Git LFS 설치
+#   2) 저장소에서 한 번만: git lfs install
+#   3) 지금처럼 .gitattributes에 패턴을 넣어두면 이후 add/commit부터 자동 적용됩니다.
+# GitHub 무료 플랜은 LFS 저장용량/대역폭이 매달 일정량까지만 무료이고, 그 이상은
+# 유료로 추가해야 하니 프로젝트 규모에 따라 필요 없으면 이 블록은 지워도 됩니다.
+# ---------------------------------------------------------------------------
+
+# 이미지/텍스처
+*.png  filter=lfs diff=lfs merge=lfs -text
+*.jpg  filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.tga  filter=lfs diff=lfs merge=lfs -text
+*.tif  filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.psd  filter=lfs diff=lfs merge=lfs -text
+*.exr  filter=lfs diff=lfs merge=lfs -text
+*.hdr  filter=lfs diff=lfs merge=lfs -text
+
+# 오디오
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+
+# 영상
+*.mp4  filter=lfs diff=lfs merge=lfs -text
+*.mov  filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text
+
+# 3D 모델
+*.fbx   filter=lfs diff=lfs merge=lfs -text
+*.obj   filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.max   filter=lfs diff=lfs merge=lfs -text
+
+# 폰트
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
+
+# 압축/패키지 파일
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+*.zip          filter=lfs diff=lfs merge=lfs -text
