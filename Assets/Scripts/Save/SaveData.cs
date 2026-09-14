@@ -11,6 +11,9 @@ namespace RedCliffMystery.Save
     [Serializable]
     public class SaveData
     {
+        // 플레이어가 직접 입력한 주인공 이름 (새 게임 시작 시 입력 화면에서 설정됨)
+        public string playerName = "";
+
         // 저장 당시 씬 이름 (로드할 때 이 씬을 먼저 불러옵니다)
         public string sceneName;
 

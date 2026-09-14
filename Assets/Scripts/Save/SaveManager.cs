@@ -123,9 +123,10 @@ namespace RedCliffMystery.Save
                 savedAtIso = DateTime.UtcNow.ToString("o")
             };
 
-            // 기존에 들고 있던 플래그/단서 목록을 이어받고, 그 위에 최신 상태를 덮어씁니다.
+            // 기존에 들고 있던 플래그/단서 목록/플레이어 이름을 이어받고, 그 위에 최신 상태를 덮어씁니다.
             data.gameFlags = new List<FlagEntry>(_currentData.gameFlags);
             data.collectedClueIds = new List<string>(_currentData.collectedClueIds);
+            data.playerName = _currentData.playerName;
 
             CollectStateFromScene(data);
 
@@ -265,6 +266,23 @@ namespace RedCliffMystery.Save
                 }
             }
             return defaultValue;
+        }
+
+        // ------------------------------------------------------------------
+        // 플레이어 이름 (새 게임 시작 시 이름 입력 화면에서 설정)
+        // ------------------------------------------------------------------
+
+        /// <summary>새 게임을 시작할 때 지정할 기본(입력을 비워둔 경우) 이름.</summary>
+        public const string DefaultPlayerName = "이름 없는 참모";
+
+        public void SetPlayerName(string name)
+        {
+            _currentData.playerName = string.IsNullOrWhiteSpace(name) ? DefaultPlayerName : name.Trim();
+        }
+
+        public string GetPlayerName()
+        {
+            return string.IsNullOrEmpty(_currentData.playerName) ? DefaultPlayerName : _currentData.playerName;
         }
 
         // ------------------------------------------------------------------
