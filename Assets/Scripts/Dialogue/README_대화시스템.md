@@ -18,7 +18,8 @@
 | `DialogueUIController.cs` | 대화 UI를 그리는 컨트롤러 |
 | `NPCInteractable.cs` | NPC에 붙여서 상호작용(E키)으로 대화를 여는 컴포넌트 |
 | `FinalAccusationController.cs` | 최종 지목 화면. 확정하면 `EndingManager.TriggerEnding()` 호출 |
-| `../Editor/DialogueDataBootstrapper.cs` | 기획서 10절 대사를 애셋으로 자동 생성해주는 편집기 도구 |
+| `FinalAccusationDialogueSet.cs` | 최종 지목 씬의 오프닝 대사 + 채모·장윤 배드 엔딩 3종 컷씬 대사 (ScriptableObject) |
+| `../Editor/DialogueDataBootstrapper.cs` | 기획서 10절 대사와 최종 지목 컷씬·배드 엔딩 3종을 애셋으로 자동 생성해주는 편집기 도구 |
 
 ## 설계 요약
 
@@ -30,8 +31,10 @@
 
 1. **대사 데이터 자동 생성**
    - 상단 메뉴에서 **적벽추리 > 대사 데이터 자동 생성**을 실행합니다.
-   - `Assets/Data/Dialogue/` 폴더에 `ClueDatabase.asset`과 `Dialogue_방통/장간/두석/설평/유성.asset` 5개가 생성됩니다.
-   - 이 애셋들은 기획서 10절의 대사를 그대로 담고 있습니다. 대사를 수정하고 싶으면 인스펙터에서 직접 고치거나, `DialogueDataBootstrapper.cs`를 고쳐서 다시 실행하면 됩니다(기존 애셋을 덮어씁니다).
+   - `Assets/Data/Dialogue/` 폴더에 `ClueDatabase.asset`, `Dialogue_방통/장간/두석/설평/유성.asset`, `FinalAccusationDialogueSet.asset`이 생성됩니다.
+   - `Assets/Data/Endings/` 폴더에 채모·장윤 배드 엔딩 3종(`bad_caimao_no_evidence.asset`, `bad_caimao_wrong_evidence.asset`, `bad_caimao_wrongful_execution.asset`)이 생성됩니다.
+   - 이 애셋들은 기획서 10절의 대사와, 최종 지목에서 채모·장윤을 지목했을 때의 컷씬 대사를 그대로 담고 있습니다. 내용을 수정하고 싶으면 인스펙터에서 직접 고치거나, `DialogueDataBootstrapper.cs`를 고쳐서 다시 실행하면 됩니다(기존 애셋을 덮어씁니다).
+   - **수동 연결 필요**: 새로 생긴 배드 엔딩 3종은 자동으로 `EndingManager`에 등록되지 않습니다. `EndingManager`가 붙은 오브젝트를 선택하고, 인스펙터의 "엔딩 목록" 리스트에 이 3개 애셋을 드래그해 추가해주세요. 이 셋은 서로 조건이 겹치지 않으므로 순서는 상관없지만, 조건이 없는 기본 배드 엔딩(목록 맨 아래)보다는 위에 있어야 합니다.
 
 2. **DialogueManager 배치**
    - `SaveManager`가 있는 씬(보통 타이틀/메인 씬)에 빈 GameObject `DialogueManager`를 만들고 `DialogueManager.cs`를 붙입니다.
@@ -61,9 +64,17 @@
    - 플레이어 오브젝트에 태그 **Player**가 지정되어 있어야 합니다.
 
 5. **최종 지목 화면**
-   - 지목용 UI(버튼 4개 + 확인 버튼 + 선택 표시 텍스트)를 만들고 `FinalAccusationController.cs`를 붙여 필드를 연결합니다.
-   - 방통/장간/두석/설평 버튼을 각각 연결하면 되고, `True Culprit Id`는 기본값 `seolpyeong` 그대로 두면 됩니다.
-   - 확인을 누르면 `final_accusation_correct` 플래그가 설정되고 곧바로 `EndingManager.Instance.TriggerEnding()`이 호출되어 기존 엔딩 시스템(6절)으로 자연스럽게 이어집니다.
+   - 이 씬(또는 UI)이 열리면 먼저 `FinalAccusationDialogueSet.openingLines`(조조: "조사를 끝냈다고 들었다...")가 재생된 뒤 지목 대상 버튼들이 나타나는 구조입니다. 그래서 이 UI는 `DialogueManager`/`DialogueUIController`와 **같은 씬**에 있어야 합니다 — 최종 지목을 별도 씬으로 분리하고 싶다면 `DialogueManager`가 붙은 오브젝트(와 그 UI 캔버스)를 `DontDestroyOnLoad`로 만들어 씬이 바뀌어도 유지되게 하세요.
+   - UI 구성:
+     - `TargetSelectionPanel` (기본 비활성): 방통/장간/두석/설평/**채모·장윤** 버튼 5개 + 확인 버튼(`ConfirmButton`, 방통/장간/두석/설평 전용) + 선택 표시 텍스트
+     - `EvidenceSelectionPanel` (기본 비활성): 체크박스(Toggle) 목록이 생성될 `EvidenceToggleListContent` + 체크박스 프리팹(`EvidenceTogglePrefab`, 자식에 Text 라벨 필요) + `SubmitEvidenceButton`("증거 제시 확정" 등)
+   - `FinalAccusationController.cs`를 붙이고 `Dialogue Set`(`FinalAccusationDialogueSet.asset`), `Clue Database`(`ClueDatabase.asset`), 위 UI 오브젝트들을 전부 인스펙터에 연결합니다. `True Culprit Id`는 기본값 `seolpyeong` 그대로 두면 됩니다.
+   - **방통/장간/두석/설평**: 버튼 클릭 → `ConfirmButton`으로 확정 → `final_accusation_correct` 플래그 설정 → 곧바로 엔딩으로 이어집니다 (기존과 동일).
+   - **채모·장윤**: 버튼 클릭 → 지금까지 수집한 단서 중 보유한 것만 체크박스로 나타남 → 플레이어가 "증거로 제시할" 단서를 몇 개 고르고 `SubmitEvidenceButton` 클릭 → 체크한 개수에 따라 세 가지 컷씬 중 하나가 재생된 뒤 해당 배드 엔딩으로 이어집니다.
+       - 0개 선택 → `bad_caimao_no_evidence` ("성급한 판단")
+       - 1개 ~ (`Minimum Evidence For Conviction` - 1)개 → `bad_caimao_wrong_evidence` ("거짓된 확신"), 기본 임계값은 3
+       - `Minimum Evidence For Conviction`개 이상 → `bad_caimao_wrongful_execution` ("잘못된 지목" — 처형 후에도 문서가 발견되지 않고, 며칠 뒤 화공으로 조조군이 대패하는 결말. 어떤 경우에도 설평이 진범이라는 사실은 밝히지 않습니다)
+   - 채모·장윤 쪽은 실제로 어떤 단서를 제시하든 관계없이 결과가 정해집니다(진범은 설평이므로 애초에 결정적 증거가 존재하지 않음) — 그래서 "제시한 개수"만으로 판정하도록 단순화했습니다. 특정 단서 조합에 따라 결과를 더 세분화하고 싶다면 `SubmitCaimaoEvidence()`에서 개수 대신 어떤 clueId가 체크됐는지를 검사하도록 확장하면 됩니다.
 
 ## 테스트 방법
 
@@ -72,6 +83,7 @@
 3. 단서를 아직 못 모은 상태에서는 안 보이던 화제/증거 버튼이, `SaveManager.Instance.MarkClueCollected("clue_...")`를 디버그로 호출한 뒤에는 나타나는지 확인합니다.
 4. 설평의 "[결정적 심문]" 화제는 `clue_household_registry_no_record`와 `clue_wu_secret_letter_true_name`을 **둘 다** 모아야만 나타납니다.
 5. F5/F9로 저장·로드한 뒤에도 화제 열람 여부, 증거 제시 여부, 인물별 clear 상태가 그대로 유지되는지 확인합니다 (전부 SaveManager 플래그 기반이라 자동으로 유지됩니다).
+6. 최종 지목 화면에서 채모·장윤을 골라 체크박스를 0개/1~2개/3개 이상 선택해가며 세 번 확정해보고, 각각 다른 컷씬과 다른 배드 엔딩(`bad_caimao_no_evidence`/`bad_caimao_wrong_evidence`/`bad_caimao_wrongful_execution`)으로 이어지는지 확인합니다. 세 경우 모두 설평이라는 이름이 대사에 등장하지 않아야 정상입니다.
 
 ## 알려진 제약 / 다음에 고려할 점
 

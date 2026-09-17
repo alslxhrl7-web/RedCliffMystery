@@ -83,6 +83,23 @@ namespace RedCliffMystery.Dialogue
             ui.CloseDialoguePanel();
         }
 
+        /// <summary>
+        /// 특정 NPC의 화제 메뉴와 무관한, 독립적인 대사 시퀀스(컷씬)를 재생합니다.
+        /// 최종 지목처럼 조조·플레이어·여러 인물이 등장하는 1회성 연출에 사용하세요.
+        /// 재생이 끝나면 onFinished가 호출되며, 화제 메뉴로는 돌아가지 않습니다.
+        /// </summary>
+        public void PlayStandaloneSequence(List<DialogueLine> lines, Action onFinished)
+        {
+            if (ui == null || lines == null)
+            {
+                onFinished?.Invoke();
+                return;
+            }
+
+            ui.OpenDialoguePanel(null);
+            PlayLines(lines, onFinished);
+        }
+
         // ------------------------------------------------------------------
         // 대사 재생
         // ------------------------------------------------------------------

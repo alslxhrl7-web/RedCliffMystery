@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using RedCliffMystery.Dialogue;
+using RedCliffMystery.Ending;
 
 namespace RedCliffMystery.EditorTools
 {
     /// <summary>
-    /// 사건기획서_v1.md 10절에 작성된 대사를 CharacterDialogueData / ClueDatabase 애셋으로
+    /// 사건기획서_v1.md 10절(심문 대사)과 최종 지목 컷씬(채모·장윤 배드 엔딩 3종)을
+    /// CharacterDialogueData / ClueDatabase / FinalAccusationDialogueSet / EndingDefinition 애셋으로
     /// 한 번에 만들어주는 편집기 전용 도구.
     ///
     /// 메뉴: 적벽추리 > 대사 데이터 자동 생성
@@ -19,11 +21,13 @@ namespace RedCliffMystery.EditorTools
     public static class DialogueDataBootstrapper
     {
         private const string OutputFolder = "Assets/Data/Dialogue";
+        private const string EndingOutputFolder = "Assets/Data/Endings";
 
         [MenuItem("적벽추리/대사 데이터 자동 생성")]
         public static void GenerateAll()
         {
             EnsureFolder(OutputFolder);
+            EnsureFolder(EndingOutputFolder);
 
             CreateClueDatabase();
             CreatePangtong();
@@ -31,10 +35,14 @@ namespace RedCliffMystery.EditorTools
             CreateDusuk();
             CreateSeolpyeong();
             CreateYuseong();
+            CreateFinalAccusationDialogueSet();
+            CreateCaimaoBadEndings();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[DialogueDataBootstrapper] 대사 데이터 생성 완료: " + OutputFolder);
+            Debug.Log("[DialogueDataBootstrapper] 대사/엔딩 데이터 생성 완료: " + OutputFolder + ", " + EndingOutputFolder +
+                       "\n※ 새로 생성된 배드 엔딩 3종(bad_caimao_*.asset)은 EndingManager의 '엔딩 목록'에 " +
+                       "수동으로 드래그해 추가해주세요 (기본값 없는 배드 엔딩보다 위쪽 아무 곳이면 됩니다).");
         }
 
         private static void EnsureFolder(string path)
@@ -416,6 +424,200 @@ namespace RedCliffMystery.EditorTools
             d.evidencePresentations = new List<EvidencePresentation>();
 
             EditorUtility.SetDirty(d);
+        }
+
+        // ------------------------------------------------------------------
+        // 최종 지목 — 채모·장윤 배드 엔딩 3종 대사
+        // ------------------------------------------------------------------
+        private static void CreateFinalAccusationDialogueSet()
+        {
+            var d = CreateOrLoadAsset<FinalAccusationDialogueSet>($"{OutputFolder}/FinalAccusationDialogueSet.asset");
+
+            d.openingLines = new List<DialogueLine>
+            {
+                L("조조", "조사를 끝냈다고 들었다."),
+                L("조조", "말해라. 범인은 누구냐?"),
+            };
+
+            // CASE 1 — 증거 없이 채모·장윤 지목: 성급한 판단
+            d.caimaoNoEvidenceLines = new List<DialogueLine>
+            {
+                L(null, "채모와 장윤입니다."),
+                L("조조", "두 사람을 범인으로 지목하는 것이냐?"),
+                L(null, "그렇습니다."),
+                L("조조", "근거는?"),
+                L(null, "...지금까지 조사한 정황을 종합하면 두 사람이 가장 의심스럽습니다."),
+                L("나레이션", "조조의 표정이 굳어진다."),
+                L("조조", "정황?"),
+                L("조조", "내가 너에게 맡긴 것은 의심할 사람을 고르는 일이 아니었다."),
+                L("조조", "범인을 찾아내라고 했다."),
+                L(null, "하지만—"),
+                L("조조", "결정적인 증거는 있느냐?"),
+                L(null, "...없습니다."),
+                L("나레이션", "잠시 침묵."),
+                L("조조", "그렇다면 네가 지금 내 앞에서 한 말은 무엇이지?"),
+                L(null, "......"),
+                L("조조", "근거 없는 지목으로 내 장수를 죽게 할 셈이냐?"),
+                L("나레이션", "조조가 병사들에게 고개를 끄덕인다."),
+                L("조조", "더 이상 맡길 수 없다."),
+                L("조조", "데려가라."),
+                L(null, "잠시만! 아직 확인하지 못한 것이—"),
+                L("조조", "이미 늦었다."),
+                L("나레이션", "화면 암전."),
+            };
+
+            // CASE 2 — 잘못된(불충분한) 증거로 채모·장윤 지목: 거짓된 확신
+            d.caimaoWrongEvidenceLines = new List<DialogueLine>
+            {
+                L(null, "채모와 장윤이 범인입니다."),
+                L("조조", "증거는?"),
+                L("나레이션", "플레이어가 증거를 내민다."),
+                L(null, "이것입니다."),
+                L("나레이션", "조조가 증거를 천천히 살펴본다."),
+                L("조조", "이것이 두 사람이 문서를 훔쳤다는 증거라고?"),
+                L(null, "그렇습니다."),
+                L("나레이션", "조조가 고개를 든다."),
+                L("조조", "아니다."),
+                L(null, "...예?"),
+                L("조조", "이 증거만으로는 문서의 도난과 두 사람을 연결할 수 없다."),
+                L(null, "하지만 이 정황은—"),
+                L("조조", "정황과 증거를 혼동하지 마라."),
+                L("나레이션", "잠시 침묵."),
+                L("조조", "네가 들고 온 것은 의심을 뒷받침할 뿐이다."),
+                L("조조", "범행을 증명하지는 못한다."),
+                L(null, "......"),
+                L("조조", "이런 증거를 가지고 내 장수를 범인이라 지목했다는 것이냐?"),
+                L("나레이션", "조조의 목소리가 차갑게 변한다."),
+                L("조조", "네 판단 하나로 사람의 목숨이 오간다."),
+                L("조조", "그 무게를 알고도 이런 판단을 내린 것이냐?"),
+                L("나레이션", "플레이어가 아무 말도 하지 못한다."),
+                L("조조", "데려가라."),
+                L("나레이션", "화면 암전."),
+            };
+
+            // CASE 3 — 조조가 납득할 만큼 증거를 모음 → 처형 후에도 문서 미발견: 잘못된 지목
+            d.caimaoWrongfulExecutionLines = new List<DialogueLine>
+            {
+                L(null, "범인은 채모와 장윤입니다."),
+                L("조조", "확실한가?"),
+                L(null, "예."),
+                L("조조", "증거를 내놓아라."),
+                L("나레이션", "플레이어가 준비한 증거를 하나씩 내놓는다."),
+                L("나레이션", "조조가 증거를 확인한다."),
+                L("나레이션", "잠시 침묵."),
+                L("조조", "...이 정도라면."),
+                L("나레이션", "조조가 채모와 장윤을 바라본다."),
+                L("조조", "채모. 장윤."),
+                L("채모", "......"),
+                L("장윤", "말도 안 됩니다."),
+                L("채모", "주공, 저희는 결코 그런 일을 하지 않았습니다."),
+                L("조조", "그렇다면 이것을 어떻게 설명할 것이냐?"),
+                L("나레이션", "채모는 아무 말도 하지 못한다."),
+                L("장윤", "저희는 결백합니다!"),
+                L("조조", "끌고 가라."),
+                L("채모", "주공!"),
+                L("장윤", "한 번만 더 조사해 주십시오!"),
+                L("나레이션", "두 사람이 끌려 나간다."),
+                L("나레이션", "[며칠 후 — 문서고]"),
+                L("나레이션", "병사가 급하게 조조에게 달려온다."),
+                L("병사", "주공!"),
+                L("조조", "무슨 일이냐?"),
+                L("병사", "문서고를 다시 확인했지만... 화공대비책은 발견되지 않았습니다."),
+                L("나레이션", "조조의 표정이 굳어진다."),
+                L("조조", "뭐라고?"),
+                L("병사", "어디에도 없습니다."),
+                L("나레이션", "침묵."),
+                L("나레이션", "조조가 천천히 플레이어를 바라본다."),
+                L("조조", "채모와 장윤을 처형했다."),
+                L("조조", "그런데 문서는 아직 사라진 채다."),
+                L(null, "...그럴 리가 없습니다."),
+                L("조조", "그렇다면 하나뿐이다."),
+                L("조조", "네가 틀렸다."),
+                L("나레이션", "플레이어가 아무 말도 하지 못한다."),
+                L("조조", "네가 가져온 증거는 두 사람을 의심하게 만들었을 뿐이다."),
+                L("조조", "하지만 진짜 범인은 따로 있었다."),
+                L(null, "......"),
+                L("조조", "너는 범인을 찾겠다고 나섰다."),
+                L("조조", "그리고 내 장수 둘을 죽게 만들었다."),
+                L("조조", "그 책임을 피할 수 있을 것 같으냐?"),
+                L(null, "주공, 한 번만 더 기회를 주십시오."),
+                L("조조", "기회?"),
+                L("나레이션", "조조가 차갑게 바라본다."),
+                L("조조", "네게는 이미 충분한 시간이 있었다."),
+                L("조조", "데려가라."),
+                L(null, "잠시만!"),
+                L("나레이션", "화면 암전."),
+                L("나레이션", "[적벽 — 같은 날 밤]"),
+                L("나레이션", "멀리서 다급한 목소리가 들려온다."),
+                L("병사", "화선이다!"),
+                L("병사 2", "불이 붙었습니다!"),
+                L("병사", "배가 움직이지 않습니다!"),
+                L("병사 2", "쇠사슬을 끊어라!"),
+                L("나레이션", "불길이 빠르게 번진다."),
+                L("병사", "불길이 너무 빠릅니다!"),
+                L("나레이션", "함선들이 연달아 불타오른다."),
+                L("나레이션", "[조조의 탈출]"),
+                L("나레이션", "조조가 불타는 함대를 바라본다."),
+                L("조조", "...이 모든 것이."),
+                L("나레이션", "잠시 침묵."),
+                L("조조", "이미 시작된 일이었단 말인가."),
+                L("나레이션", "조조가 뒤를 돌아본다."),
+                L("조조", "퇴각한다."),
+                L("나레이션", "[마지막 장면]"),
+                L("나레이션", "불타는 적벽. 카메라는 천천히 문서고로 이동한다."),
+                L("나레이션", "화공대비책이 있던 자리. 텅 비어 있다."),
+                L("나레이션", "바닥에는 작은 종이 조각 하나만 남아 있다."),
+                L("나레이션", "화면이 천천히 어두워진다."),
+                L("나레이션", "\"범인을 찾았다고 믿었다.\""),
+                L("나레이션", "잠시 정적."),
+                L("나레이션", "\"그러나 그것은 또 다른 오판이었다.\""),
+                L("나레이션", "\"진실은 아직 모습을 드러내지 않았다.\""),
+                L("나레이션", "화면 암전."),
+            };
+
+            EditorUtility.SetDirty(d);
+        }
+
+        // ------------------------------------------------------------------
+        // 최종 지목 — 채모·장윤 배드 엔딩 3종 EndingDefinition
+        // ------------------------------------------------------------------
+        private static void CreateCaimaoBadEndings()
+        {
+            CreateSingleFlagBadEnding(
+                "bad_caimao_no_evidence",
+                "배드 엔딩 — 성급한 판단",
+                "증거 하나 없이 채모와 장윤을 지목했다. 조조는 근거 없는 의심만으로 사람을 단죄할 수 없다며, " +
+                "그 자리에서 조사 임무를 거두어들였다.",
+                "accused_caimao_no_evidence");
+
+            CreateSingleFlagBadEnding(
+                "bad_caimao_wrong_evidence",
+                "배드 엔딩 — 거짓된 확신",
+                "정황에 불과한 것을 결정적 증거라 착각해 채모와 장윤을 지목했다. 조조는 정황과 증거를 혼동했다며 " +
+                "그 판단의 무게를 추궁했다.",
+                "accused_caimao_wrong_evidence");
+
+            CreateSingleFlagBadEnding(
+                "bad_caimao_wrongful_execution",
+                "배드 엔딩 — 잘못된 지목",
+                "채모와 장윤을 처형했지만, 화공대비책은 끝내 발견되지 않았다. 며칠 뒤 오나라의 화공으로 조조군은 " +
+                "대패했다.\n\n\"범인을 찾았다고 믿었다. 그러나 그것은 또 다른 오판이었다. 진실은 아직 모습을 " +
+                "드러내지 않았다.\"",
+                "accused_caimao_wrongful_execution");
+        }
+
+        private static void CreateSingleFlagBadEnding(string endingId, string title, string bodyText, string flagKey)
+        {
+            var ending = CreateOrLoadAsset<EndingDefinition>($"{EndingOutputFolder}/{endingId}.asset");
+            ending.endingId = endingId;
+            ending.endingType = EndingType.Bad;
+            ending.title = title;
+            ending.bodyText = bodyText;
+            ending.conditions = new List<EndingCondition>
+            {
+                new EndingCondition { type = EndingCondition.ConditionType.FlagIsTrue, key = flagKey },
+            };
+            EditorUtility.SetDirty(ending);
         }
     }
 }
