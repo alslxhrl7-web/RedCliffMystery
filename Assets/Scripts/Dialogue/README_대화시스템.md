@@ -61,7 +61,7 @@ NPC와 플레이어는 전부 색이 다른 캡슐/큐브 도형입니다 — �
    - `Assets/Data/Dialogue/` 폴더에 `ClueDatabase.asset`, `Dialogue_방통/장간/두석/설평/유성.asset`, `FinalAccusationDialogueSet.asset`이 생성됩니다.
    - `Assets/Data/Endings/` 폴더에 두석 오인 지목 배드 엔딩(`bad_dusuk_document_lost.asset`)과 채모·장윤 배드 엔딩 3종(`bad_caimao_no_evidence.asset`, `bad_caimao_wrong_evidence.asset`, `bad_caimao_wrongful_execution.asset`), 총 4개가 생성됩니다.
    - 이 애셋들은 기획서 10절의 대사와, 최종 지목에서 두석 또는 채모·장윤을 지목했을 때의 컷씬 대사를 그대로 담고 있습니다. 내용을 수정하고 싶으면 인스펙터에서 직접 고치거나, `DialogueDataBootstrapper.cs`를 고쳐서 다시 실행하면 됩니다(기존 애셋을 덮어씁니다).
-   - **수동 연결 필요** (위의 "플레이 가능한 씬 자동 생성"을 사용했다면 이미 자동으로 되어 있으므로 건너뛰어도 됩니다): 새로 생긴 엔딩 애셋들은 자동으로 `EndingManager`에 등록되지 않습니다. `EndingManager`가 붙은 오브젝트를 선택하고, 인스펙터의 "엔딩 목록" 리스트에 `true_ending → good_ending → bad_dusuk_document_lost → bad_caimao_no_evidence → bad_caimao_wrong_evidence → bad_caimao_wrongful_execution → bad_default` 순서로 드래그해 추가해주세요. 조건이 없는 `bad_default`는 반드시 맨 아래에 있어야 합니다.
+   - **수동 연결 필요** (위의 "플레이 가능한 씬 자동 생성"을 사용했다면 이미 자동으로 되어 있으므로 건너뛰어도 됩니다): 새로 생긴 엔딩 애셋들은 자동으로 `EndingManager`에 등록되지 않습니다. `EndingManager`가 붙은 오브젝트를 선택하고, 인스펙터의 "엔딩 목록" 리스트에 `true_ending → normal_ending → bad_dusuk_document_lost → bad_caimao_no_evidence → bad_caimao_wrong_evidence → bad_caimao_wrongful_execution → bad_default` 순서로 드래그해 추가해주세요. 조건이 없는 `bad_default`는 반드시 맨 아래에 있어야 합니다.
 
 2. **DialogueManager 배치**
    - `SaveManager`가 있는 씬(보통 타이틀/메인 씬)에 빈 GameObject `DialogueManager`를 만들고 `DialogueManager.cs`를 붙입니다.
