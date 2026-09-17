@@ -36,13 +36,17 @@ namespace RedCliffMystery.EditorTools
             CreateSeolpyeong();
             CreateYuseong();
             CreateFinalAccusationDialogueSet();
+            CreateMainEndings();
             CreateCaimaoBadEndings();
+            CreateDusukBadEnding();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[DialogueDataBootstrapper] 대사/엔딩 데이터 생성 완료: " + OutputFolder + ", " + EndingOutputFolder +
-                       "\n※ 새로 생성된 배드 엔딩 3종(bad_caimao_*.asset)은 EndingManager의 '엔딩 목록'에 " +
-                       "수동으로 드래그해 추가해주세요 (기본값 없는 배드 엔딩보다 위쪽 아무 곳이면 됩니다).");
+                       "\n※ 씬을 직접 구성한다면, 새로 생성된 엔딩 7종(true_ending, good_ending, bad_default, " +
+                       "bad_dusuk_document_lost, bad_caimao_* 3개)을 EndingManager의 '엔딩 목록'에 이 순서(트루 → 굿 → " +
+                       "구체적 배드 4종 → bad_default)로 드래그해 추가해주세요. " +
+                       "'적벽추리 > 플레이 가능한 씬 자동 생성'을 실행하면 이 작업까지 포함해 전부 자동으로 배치됩니다.");
         }
 
         private static void EnsureFolder(string path)
@@ -575,7 +579,148 @@ namespace RedCliffMystery.EditorTools
                 L("나레이션", "화면 암전."),
             };
 
+            // 두석 지목 — 오인 지목 배드 엔딩: 거짓 알리바이는 밝혀냈으나 문서 회수 실패
+            d.dusukDocumentLostLines = new List<DialogueLine>
+            {
+                L("나레이션", "[최종 심문 — 두석 지목]"),
+                L("조조", "범인은 누구라 생각하느냐?"),
+                L(null, "두석입니다."),
+                L("조조", "근거는?"),
+                L(null, "두석은 사건이 발생한 밤, 자신의 행적에 대해 거짓말을 했습니다."),
+                L("조조", "그 이유는 확인했느냐?"),
+                L(null, "확인했습니다. 그는 근무지를 이탈해 도박을 했고, 그것을 숨기기 위해 거짓말을 했습니다."),
+                L("조조", "그렇다면 그 거짓말이 문서를 훔쳤다는 증거는 아니지 않느냐?"),
+                L(null, "하지만 그의 행적에는 분명한 공백이 있습니다."),
+                L(null, "그리고 문서가 사라진 시간과도 일치합니다."),
+                L("조조", "……."),
+                L(null, "그가 범인이 아니라면, 누군가 문서를 훔쳐간 사실을 설명할 수 없습니다."),
+                L("나레이션", "조조가 두석을 바라본다."),
+                L("조조", "두석."),
+                L("두석", "대장군…… 저는 도박을 한 것은 사실입니다."),
+                L("두석", "하지만 문서는 훔치지 않았습니다."),
+                L("조조", "네가 자리를 비운 사실은 확인되었다."),
+                L("조조", "그 시간 동안 문서고에서 무슨 일이 있었는지 설명할 수 있느냐?"),
+                L("두석", "……할 수 없습니다."),
+                L("나레이션", "잠시 침묵."),
+                L("조조", "처형하라."),
+                L("두석", "대장군! 저는 정말—!"),
+                L("나레이션", "병사들이 두석을 끌고 나간다."),
+                L("나레이션", "[며칠 후]"),
+                L("나레이션", "문서고."),
+                L("나레이션", "플레이어가 서류와 장부를 다시 확인한다."),
+                L(null, "……없다."),
+                L(null, "두석이 범인이라면 문서는 여기로 돌아와 있어야 하는데……."),
+                L("나레이션", "문서고는 여전히 비어 있다."),
+                L(null, "대체 어디로 사라진 거지……?"),
+                L("나레이션", "[라이벌 등장]"),
+                L("유성", "아직도 찾고 있었나?"),
+                L(null, "유성……."),
+                L("유성", "두석은 죽었다."),
+                L("유성", "그런데 문서는 찾지 못했지."),
+                L(null, "……."),
+                L("유성", "대장군께서는 범인을 잡으라고 명하셨다."),
+                L("유성", "그런데 네가 가져온 것은 죄인의 목 하나뿐이다."),
+                L(null, "나는 두석의 행적과 증거를 모두 확인했다."),
+                L("유성", "그래서?"),
+                L(null, "……."),
+                L("유성", "문서는 여전히 없다."),
+                L("유성", "결국 네가 증명한 것은 두석이 수상했다는 사실뿐이다."),
+                L(null, "그건……."),
+                L("유성", "전쟁을 앞두고 중요한 문서 하나가 사라졌다."),
+                L("유성", "그리고 그 문서를 찾으라는 명을 받은 자가 아무것도 찾아내지 못했다."),
+                L("나레이션", "유성이 낮게 웃는다."),
+                L("유성", "대장군께서 너를 계속 곁에 둘 이유가 있을까?"),
+                L("나레이션", "[조조의 집무실]"),
+                L("조조", "네가 두석을 지목한 근거에는 문제가 없었다."),
+                L("조조", "하지만 결과가 무엇이지?"),
+                L(null, "……문서를 찾지 못했습니다."),
+                L("조조", "맞다."),
+                L("조조", "나는 범인을 찾으라고 명했다."),
+                L("조조", "그리고 너는 범인을 처벌했지만, 정작 가장 중요한 것을 찾지 못했다."),
+                L(null, "한 번만 더 기회를 주십시오."),
+                L("조조", "이미 충분히 주었다."),
+                L("나레이션", "유성이 옆에서 조용히 입을 연다."),
+                L("유성", "대장군, 더 이상의 조사는 위험합니다."),
+                L("유성", "문서가 적에게 넘어갔다면 지금이라도 대비책을 세워야 합니다."),
+                L("조조", "……."),
+                L("조조", "네가 무능해서라고 단정할 수는 없다."),
+                L("조조", "하지만 전쟁을 앞둔 지금, 실패의 책임을 누군가는 져야 한다."),
+                L(null, "대장군……."),
+                L("조조", "이 일에서 손을 떼라."),
+                L(null, "저는 아직 포기하지 않았습니다!"),
+                L("유성", "포기하지 않는 것과 책임을 지는 것은 다른 문제지."),
+                L("나레이션", "병사들이 다가온다."),
+                L(null, "잠깐만……!"),
+                L("조조", "데려가라."),
+                L("나레이션", "[마지막 장면]"),
+                L("나레이션", "어두운 복도."),
+                L("나레이션", "플레이어가 끌려가며 마지막으로 문서고를 바라본다."),
+                L("나레이션", "열린 문서함."),
+                L("나레이션", "비어 있는 자리 하나."),
+                L("나레이션", "\"두석의 알리바이는 확인했다.\""),
+                L("나레이션", "\"그의 거짓말과 범행의 흔적도 밝혀냈다.\""),
+                L("나레이션", "\"그러나 그것만으로 사라진 문서의 행방까지 알 수 있었던 것은 아니었다.\""),
+                L("나레이션", "\"범인을 처벌했지만, 문서는 돌아오지 않았다.\""),
+                L("나레이션", "\"그리고 그 실패를 틈타, 누군가는 나를 제거하려 했다.\""),
+                L("나레이션", "화면 암전"),
+            };
+
             EditorUtility.SetDirty(d);
+        }
+
+        // ------------------------------------------------------------------
+        // 메인 엔딩 3종 (기획서 6절 표) — 트루 / 굿 / 기본(조건 없음) 배드
+        // ------------------------------------------------------------------
+        private static void CreateMainEndings()
+        {
+            CreateEndingAsset(
+                "true_ending",
+                EndingType.True,
+                "트루 엔딩 — 진실을 밝히다",
+                "설평(목연)의 정체를 정확히 밝혀내고 결정적 증거까지 모두 확보했다. 화공을 미리 대비한 조조는 " +
+                "오나라의 계략을 무력화시켰고, 역사가 바뀌었다. 조조는 그런 당신에게 절대적인 신임을 보낸다.",
+                new List<EndingCondition>
+                {
+                    new EndingCondition { type = EndingCondition.ConditionType.FlagIsTrue, key = "final_accusation_correct" },
+                    new EndingCondition { type = EndingCondition.ConditionType.ClueCollected, key = "clue_household_registry_no_record" },
+                    new EndingCondition { type = EndingCondition.ConditionType.ClueCollected, key = "clue_wu_secret_letter_true_name" },
+                });
+
+            CreateEndingAsset(
+                "good_ending",
+                EndingType.Good,
+                "굿 엔딩 — 절반의 성공",
+                "설평(목연)을 정확히 지목하는 데는 성공했지만, 결정적 증거를 모두 확보하지는 못했다. 조조는 결과를 " +
+                "인정하면서도 완전히 신뢰하지는 않는 눈치다.",
+                new List<EndingCondition>
+                {
+                    new EndingCondition { type = EndingCondition.ConditionType.FlagIsTrue, key = "final_accusation_correct" },
+                });
+
+            // 조건 없음 = EndingManager 목록 맨 아래에 두는 기본(fallback) 배드 엔딩.
+            // 방통/장간처럼 전용 컷씬이 없는 오답 지목이 전부 여기로 떨어집니다.
+            CreateEndingAsset(
+                "bad_default",
+                EndingType.Bad,
+                "배드 엔딩 — 잘못된 지목",
+                "엉뚱한 사람을 범인으로 지목했다. 진범 설평(목연)은 유유히 도주해 오나라에 화공대비책을 넘겼고, " +
+                "역사대로 적벽에서 조조군은 대패했다. 결국 사건의 책임은 고스란히 당신에게 돌아왔다.",
+                new List<EndingCondition>());
+        }
+
+        // ------------------------------------------------------------------
+        // 최종 지목 — 두석 오인 지목 배드 엔딩 EndingDefinition
+        // ------------------------------------------------------------------
+        private static void CreateDusukBadEnding()
+        {
+            CreateSingleFlagBadEnding(
+                "bad_dusuk_document_lost",
+                "배드 엔딩 — 사라진 문서",
+                "두석의 거짓 알리바이와 도박 사실을 밝혀내 처벌했지만, 화공대비책 문서는 끝내 돌아오지 않았다. " +
+                "라이벌 유성은 문서 회수 실패를 근거로 조조 앞에서 책임을 추궁했고, 결국 플레이어는 조사에서 " +
+                "손을 떼야 했다.\n\n\"범인을 처벌했지만, 문서는 돌아오지 않았다. 그리고 그 실패를 틈타, 누군가는 " +
+                "나를 제거하려 했다.\"",
+                "accused_dusuk_document_lost");
         }
 
         // ------------------------------------------------------------------
@@ -608,17 +753,39 @@ namespace RedCliffMystery.EditorTools
 
         private static void CreateSingleFlagBadEnding(string endingId, string title, string bodyText, string flagKey)
         {
-            var ending = CreateOrLoadAsset<EndingDefinition>($"{EndingOutputFolder}/{endingId}.asset");
-            ending.endingId = endingId;
-            ending.endingType = EndingType.Bad;
-            ending.title = title;
-            ending.bodyText = bodyText;
-            ending.conditions = new List<EndingCondition>
+            CreateEndingAsset(endingId, EndingType.Bad, title, bodyText, new List<EndingCondition>
             {
                 new EndingCondition { type = EndingCondition.ConditionType.FlagIsTrue, key = flagKey },
-            };
+            });
+        }
+
+        private static void CreateEndingAsset(string endingId, EndingType type, string title, string bodyText, List<EndingCondition> conditions)
+        {
+            var ending = CreateOrLoadAsset<EndingDefinition>($"{EndingOutputFolder}/{endingId}.asset");
+            ending.endingId = endingId;
+            ending.endingType = type;
+            ending.title = title;
+            ending.bodyText = bodyText;
+            ending.conditions = conditions;
             EditorUtility.SetDirty(ending);
         }
+
+        // ------------------------------------------------------------------
+        // 엔딩 우선순위 목록 (SceneBootstrapper가 EndingManager에 그대로 채워 넣는 순서)
+        // ------------------------------------------------------------------
+        public static readonly string[] EndingPriorityOrder =
+        {
+            "true_ending",
+            "good_ending",
+            "bad_dusuk_document_lost",
+            "bad_caimao_no_evidence",
+            "bad_caimao_wrong_evidence",
+            "bad_caimao_wrongful_execution",
+            "bad_default",
+        };
+
+        public static string EndingAssetPath(string endingId) => $"{EndingOutputFolder}/{endingId}.asset";
+        public static string DialogueAssetPath(string fileName) => $"{OutputFolder}/{fileName}";
     }
 }
 #endif

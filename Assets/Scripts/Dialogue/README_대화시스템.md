@@ -18,8 +18,8 @@
 | `DialogueUIController.cs` | 대화 UI를 그리는 컨트롤러 |
 | `NPCInteractable.cs` | NPC에 붙여서 상호작용(E키)으로 대화를 여는 컴포넌트 |
 | `FinalAccusationController.cs` | 최종 지목 화면. 확정하면 `EndingManager.TriggerEnding()` 호출 |
-| `FinalAccusationDialogueSet.cs` | 최종 지목 씬의 오프닝 대사 + 채모·장윤 배드 엔딩 3종 컷씬 대사 (ScriptableObject) |
-| `../Editor/DialogueDataBootstrapper.cs` | 기획서 10절 대사와 최종 지목 컷씬·배드 엔딩 3종을 애셋으로 자동 생성해주는 편집기 도구 |
+| `FinalAccusationDialogueSet.cs` | 최종 지목 씬의 오프닝 대사 + 두석 오인 지목 컷씬 + 채모·장윤 배드 엔딩 3종 컷씬 대사 (ScriptableObject) |
+| `../Editor/DialogueDataBootstrapper.cs` | 기획서 10절 대사와 최종 지목 컷씬·배드 엔딩 4종(두석 1 + 채모·장윤 3)을 애셋으로 자동 생성해주는 편집기 도구 |
 
 ## 설계 요약
 
@@ -27,14 +27,41 @@
 - 조건/효과는 전부 `SaveManager`의 플래그(`SetFlag`/`GetFlag`)와 단서 수집(`MarkClueCollected`/`IsClueCollected`)만 사용합니다. 그래서 저장/로드해도 대화 진행 상황이 그대로 유지되고, `EndingCondition`에서도 같은 플래그를 바로 참조할 수 있습니다.
 - 각 화제/증거를 "처음 봤는지"는 `topic_seen_<characterId>_<topicId>`, `evidence_presented_<characterId>_<clueId>` 라는 이름의 플래그로 자동 기록됩니다. 직접 신경 쓸 필요 없습니다.
 
-## 에디터 설정 순서
+## 가장 빠른 시작: 플레이 가능한 씬 한 번에 만들기
+
+아직 실제 3D 캐릭터/맵이 없어도, 아래 메뉴 하나로 지금까지 만든 저장/엔딩/대화/최종 지목 시스템을 전부 바로
+플레이해볼 수 있습니다.
+
+1. 상단 메뉴에서 **적벽추리 > 플레이 가능한 씬 자동 생성**을 실행합니다. (`Assets/Scripts/Editor/SceneBootstrapper.cs`)
+2. 내부적으로 "대사 데이터 자동 생성"도 함께 실행되므로 따로 실행할 필요가 없습니다.
+3. `Assets/Scenes/Investigation.unity`(플레이어 + NPC 5명 + 대화 UI + 최종 지목 UI를 갖춘 메인 씬)와
+   `Assets/Scenes/Ending.unity`(엔딩 결과 화면)가 자동으로 만들어지고, 두 씬이 Build Settings에도 등록됩니다.
+4. 엔딩 우선순위(트루 → 굿 → 두석/채모·장윤 배드 4종 → 기본 배드)까지 `EndingManager`에 자동으로 채워집니다 —
+   이 문서 아래쪽의 "수동 연결 필요" 항목을 사람이 직접 할 필요가 없습니다.
+5. 실행이 끝나면 Investigation 씬이 열린 상태가 되므로, 바로 **Play** 버튼을 누르면 됩니다.
+
+조작법: `WASD`/방향키로 이동, NPC(캡슐 도형) 근처에서 `E`로 대화, 안쪽 끝의 빨간 상자("최종보고_조조막사")
+근처에서 `E`로 최종 지목 시작, `F5` 저장 / `F9` 불러오기 / `F6` 초기화, `F10` 강제 엔딩 판정 / `F11` 정답
+플래그 강제 설정(디버그용).
+
+NPC와 플레이어는 전부 색이 다른 캡슐/큐브 도형입니다 — 아직 3D 캐릭터·맵 애셋이 준비되지 않아서이며,
+시스템(대화/최종 지목/엔딩)이 실제로 동작하는지 확인하기 위한 자리 표시자입니다. 실제 아트가 준비되면
+각 오브젝트의 Mesh/Material만 교체하면 되고, 붙어 있는 스크립트(`NPCInteractable`, `FinalAccusationTrigger` 등)와
+연결된 대화 데이터는 그대로 재사용할 수 있습니다. 이름 입력 화면(`PlayerNameInputUI`)은 이 자동 생성 씬에는
+포함하지 않았습니다 — 이미 별도로 완성되어 있으니, 타이틀 씬을 따로 만들 때 그대로 붙이면 됩니다.
+
+이미 같은 경로에 씬 파일이 있으면 새로 덮어쓰므로, 씬을 손으로 수정해둔 내용이 있다면 실행 전에 복사해두세요.
+아래의 "에디터 설정 순서"는 이 자동 생성 과정이 내부적으로 무엇을 하는지, 그리고 씬을 손으로 직접 구성하거나
+수정하고 싶을 때 참고할 수 있도록 남겨둔 상세 설명입니다.
+
+## 에디터 설정 순서 (수동으로 직접 구성하거나, 자동 생성 결과를 이해하고 싶을 때)
 
 1. **대사 데이터 자동 생성**
    - 상단 메뉴에서 **적벽추리 > 대사 데이터 자동 생성**을 실행합니다.
    - `Assets/Data/Dialogue/` 폴더에 `ClueDatabase.asset`, `Dialogue_방통/장간/두석/설평/유성.asset`, `FinalAccusationDialogueSet.asset`이 생성됩니다.
-   - `Assets/Data/Endings/` 폴더에 채모·장윤 배드 엔딩 3종(`bad_caimao_no_evidence.asset`, `bad_caimao_wrong_evidence.asset`, `bad_caimao_wrongful_execution.asset`)이 생성됩니다.
-   - 이 애셋들은 기획서 10절의 대사와, 최종 지목에서 채모·장윤을 지목했을 때의 컷씬 대사를 그대로 담고 있습니다. 내용을 수정하고 싶으면 인스펙터에서 직접 고치거나, `DialogueDataBootstrapper.cs`를 고쳐서 다시 실행하면 됩니다(기존 애셋을 덮어씁니다).
-   - **수동 연결 필요**: 새로 생긴 배드 엔딩 3종은 자동으로 `EndingManager`에 등록되지 않습니다. `EndingManager`가 붙은 오브젝트를 선택하고, 인스펙터의 "엔딩 목록" 리스트에 이 3개 애셋을 드래그해 추가해주세요. 이 셋은 서로 조건이 겹치지 않으므로 순서는 상관없지만, 조건이 없는 기본 배드 엔딩(목록 맨 아래)보다는 위에 있어야 합니다.
+   - `Assets/Data/Endings/` 폴더에 두석 오인 지목 배드 엔딩(`bad_dusuk_document_lost.asset`)과 채모·장윤 배드 엔딩 3종(`bad_caimao_no_evidence.asset`, `bad_caimao_wrong_evidence.asset`, `bad_caimao_wrongful_execution.asset`), 총 4개가 생성됩니다.
+   - 이 애셋들은 기획서 10절의 대사와, 최종 지목에서 두석 또는 채모·장윤을 지목했을 때의 컷씬 대사를 그대로 담고 있습니다. 내용을 수정하고 싶으면 인스펙터에서 직접 고치거나, `DialogueDataBootstrapper.cs`를 고쳐서 다시 실행하면 됩니다(기존 애셋을 덮어씁니다).
+   - **수동 연결 필요** (위의 "플레이 가능한 씬 자동 생성"을 사용했다면 이미 자동으로 되어 있으므로 건너뛰어도 됩니다): 새로 생긴 엔딩 애셋들은 자동으로 `EndingManager`에 등록되지 않습니다. `EndingManager`가 붙은 오브젝트를 선택하고, 인스펙터의 "엔딩 목록" 리스트에 `true_ending → good_ending → bad_dusuk_document_lost → bad_caimao_no_evidence → bad_caimao_wrong_evidence → bad_caimao_wrongful_execution → bad_default` 순서로 드래그해 추가해주세요. 조건이 없는 `bad_default`는 반드시 맨 아래에 있어야 합니다.
 
 2. **DialogueManager 배치**
    - `SaveManager`가 있는 씬(보통 타이틀/메인 씬)에 빈 GameObject `DialogueManager`를 만들고 `DialogueManager.cs`를 붙입니다.
@@ -69,7 +96,8 @@
      - `TargetSelectionPanel` (기본 비활성): 방통/장간/두석/설평/**채모·장윤** 버튼 5개 + 확인 버튼(`ConfirmButton`, 방통/장간/두석/설평 전용) + 선택 표시 텍스트
      - `EvidenceSelectionPanel` (기본 비활성): 체크박스(Toggle) 목록이 생성될 `EvidenceToggleListContent` + 체크박스 프리팹(`EvidenceTogglePrefab`, 자식에 Text 라벨 필요) + `SubmitEvidenceButton`("증거 제시 확정" 등)
    - `FinalAccusationController.cs`를 붙이고 `Dialogue Set`(`FinalAccusationDialogueSet.asset`), `Clue Database`(`ClueDatabase.asset`), 위 UI 오브젝트들을 전부 인스펙터에 연결합니다. `True Culprit Id`는 기본값 `seolpyeong` 그대로 두면 됩니다.
-   - **방통/장간/두석/설평**: 버튼 클릭 → `ConfirmButton`으로 확정 → `final_accusation_correct` 플래그 설정 → 곧바로 엔딩으로 이어집니다 (기존과 동일).
+   - **방통/장간/설평**: 버튼 클릭 → `ConfirmButton`으로 확정 → `final_accusation_correct` 플래그 설정 → 곧바로 엔딩으로 이어집니다 (기존과 동일. 설평을 고르면 `correct = true`이므로 아래 두석 전용 분기는 타지 않습니다).
+   - **두석**: 버튼 클릭 → `ConfirmButton`으로 확정 → `accused_dusuk_document_lost` 플래그 설정 → 전용 컷씬(`dialogueSet.dusukDocumentLostLines`) 재생 → `bad_dusuk_document_lost` 엔딩으로 이어집니다. 이 컷씬은 "거짓 알리바이를 밝혀낸 추리 자체는 옳았지만, 문서를 회수하지 못해 처벌 후에도 사건이 끝나지 않고, 라이벌 유성이 그 실패를 근거로 플레이어를 조사에서 배제시키는" 내용입니다. 설평이 진범이라는 사실은 이 컷씬에서도 밝히지 않습니다.
    - **채모·장윤**: 버튼 클릭 → 지금까지 수집한 단서 중 보유한 것만 체크박스로 나타남 → 플레이어가 "증거로 제시할" 단서를 몇 개 고르고 `SubmitEvidenceButton` 클릭 → 체크한 개수에 따라 세 가지 컷씬 중 하나가 재생된 뒤 해당 배드 엔딩으로 이어집니다.
        - 0개 선택 → `bad_caimao_no_evidence` ("성급한 판단")
        - 1개 ~ (`Minimum Evidence For Conviction` - 1)개 → `bad_caimao_wrong_evidence` ("거짓된 확신"), 기본 임계값은 3
@@ -84,6 +112,7 @@
 4. 설평의 "[결정적 심문]" 화제는 `clue_household_registry_no_record`와 `clue_wu_secret_letter_true_name`을 **둘 다** 모아야만 나타납니다.
 5. F5/F9로 저장·로드한 뒤에도 화제 열람 여부, 증거 제시 여부, 인물별 clear 상태가 그대로 유지되는지 확인합니다 (전부 SaveManager 플래그 기반이라 자동으로 유지됩니다).
 6. 최종 지목 화면에서 채모·장윤을 골라 체크박스를 0개/1~2개/3개 이상 선택해가며 세 번 확정해보고, 각각 다른 컷씬과 다른 배드 엔딩(`bad_caimao_no_evidence`/`bad_caimao_wrong_evidence`/`bad_caimao_wrongful_execution`)으로 이어지는지 확인합니다. 세 경우 모두 설평이라는 이름이 대사에 등장하지 않아야 정상입니다.
+7. 최종 지목 화면에서 두석을 골라 확정해보고, 전용 컷씬(유성 등장, 조조의 집무실 장면 포함)이 재생된 뒤 `bad_dusuk_document_lost` 엔딩으로 이어지는지 확인합니다. 이 경우에도 설평이라는 이름이 대사에 등장하지 않아야 정상입니다.
 
 ## 알려진 제약 / 다음에 고려할 점
 

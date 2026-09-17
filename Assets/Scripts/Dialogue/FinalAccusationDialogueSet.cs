@@ -9,6 +9,11 @@ namespace RedCliffMystery.Dialogue
     /// 채모·장윤을 지목했을 때는 플레이어가 "증거로 제시"한 단서의 개수에 따라
     /// 세 가지 배드 엔딩 컷씬 중 하나가 재생됩니다 (실제로는 무엇을 제시하든 결국 오답입니다 —
     /// 진범은 설평이기 때문입니다). 어느 경우에도 설평이 진범이라는 사실은 밝히지 않습니다.
+    ///
+    /// 두석을 지목했을 때는 "추리 자체(거짓 알리바이 적발)는 옳았지만, 정작 사라진 문서를
+    /// 회수하지 못해 배드 엔딩으로 이어지는" 전용 컷씬이 재생됩니다. 두석은 처벌되지만 진범이
+    /// 아니므로 문서는 끝내 발견되지 않고, 라이벌 유성이 그 실패를 근거로 플레이어를 조사에서
+    /// 배제시킵니다. 이 경우에도 설평이 진범이라는 사실은 밝히지 않습니다.
     /// </summary>
     [CreateAssetMenu(fileName = "FinalAccusationDialogueSet", menuName = "적벽추리/Final Accusation Dialogue Set", order = 3)]
     public class FinalAccusationDialogueSet : ScriptableObject
@@ -24,5 +29,8 @@ namespace RedCliffMystery.Dialogue
 
         [Header("채모·장윤 지목 — CASE 3: 조조가 납득할 만큼 증거를 모음 → 처형 후에도 문서가 발견되지 않음 (잘못된 지목)")]
         public List<DialogueLine> caimaoWrongfulExecutionLines = new List<DialogueLine>();
+
+        [Header("두석 지목 — 오인 지목 배드 엔딩 (알리바이 거짓말은 맞게 짚었으나 문서 회수 실패)")]
+        public List<DialogueLine> dusukDocumentLostLines = new List<DialogueLine>();
     }
 }
