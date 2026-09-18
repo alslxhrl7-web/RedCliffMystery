@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9837e75e6400a419be66cd7a079d15, type: 3}
+  m_Name: Dialogue_Pangtong
+  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Dialogue.CharacterDialogueData
+  characterId: pangtong
+  displayName: "\uBC29\uD1B5"
+  introLines:
+  - speakerName: "\uBC29\uD1B5"
+    text: "\uC74C? \uBB54\uAC00 \uCE90\uBB3C\uC73C\uB7EC \uC628 \uBAA8\uC591\uC774\uAD70. \uADF8 \uBB38\uC11C \uC598\uAE30\uACA0\uC9C0."
+  - speakerName: "\uBC29\uD1B5"
+    text: "\uB098\uB3C4 \uADF8 \uBC29\uBE44\uCC45\uC758 \uC911\uC694\uC131\uC740 \uC798 \uC54C\uACE0 \uC788\uB2E4. \uB3C4\uC6C0\uC774 \uB420 \uC77C\uC774\uB77C\uBA74 \uBB50\uB4E0 \uBB3B\uAC8C."
+  topics:
+  - topicId: pt_lianhuan
+    buttonLabel: "\uC5F0\uD658\uACC4\uC5D0 \uB300\uD558\uC5EC"
+    visibilityConditions: []
+    lines:
+    - speakerName: 
+      text: "\uC5F0\uD658\uACC4\uB294 \uC2B9\uC0C1\uC758 \uB73B\uC785\uB2C8\uAE4C, \uC544\uB2C8\uBA74 \uACF5\uC758 \uAC74\uC758\uC600\uC2B5\uB2C8\uAE4C?"
+    - speakerName: "\uBC29\uD1B5"
+      text: "\uB0B4\uAC00 \uC62C\uB9B0 \uACC4\uCC45\uC774\uB2E4. \uBC30\uBA40\uBBF8\uB85C \uC4F0\uB7EC\uC9C0\uB294 \uBCD1\uC0AC\uB4E4\uC744 \uBCF4\uACE0\uB9CC \uC788\uC744 \uC218\uB294 \uC5C6\uC5C8\uC73C\uB2C8\uAE4C."
+    - speakerName: "\uBC29\uD1B5"
+      text: "...\uD55C\uB370 \uC65C \uADF8\uB7F0 \uAC78 \uBB3B\uB098? \uC124\uB9C8 \uC774 \uACC4\uCC45 \uC790\uCCB4\uB97C \uC758\uC2EC\uD558\uB294 \uAC90\uAC00?"
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  - topicId: pt_night
+    buttonLabel: "\uADF8\uB0A0 \uBC24 \uD589\uC801"
+    visibilityConditions: []
+    lines:
+    - speakerName: "\uBC29\uD1B5"
+      text: "\uADF8\uB0A0 \uBC24? \uB531\uD788 \uD2B9\uBCC4\uD55C \uC77C\uC740 \uC5C6\uC5C8\uB2E4."
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  - topicId: pt_zhouyu
+    buttonLabel: "\uC8FC\uC720\uC640\uC758 \uC778\uC5F0"
+    visibilityConditions:
+    - type: 3
+      key: clue_pangtong_zhouyu_rumor
+    lines:
+    - speakerName: 
+      text: "\uC608\uC804\uC5D0 \uC8FC\uC720 \uB3C4\uB3C5\uACFC \uAC00\uAE4C\uC6B0\uC168\uB2E4\uB294 \uC18C\uBB38\uC774 \uC788\uB358\uB370."
+    - speakerName: "\uBC29\uD1B5"
+      text: "...\uC61B\uC77C\uC774\uB2E4. \uADF8\uAC8C \uC9C0\uAE08 \uC774 \uC0AC\uAC74\uACFC \uBB34\uC2A8 \uC0C1\uAD00\uC778\uAC00?"
+    - speakerName: "\uBC29\uD1B5"
+      text: "\uC61B \uC778\uC5F0\uC774 \uC788\uB2E4\uACE0 \uD574\uC11C \uC804\uBD80 \uCCA9\uC790 \uCDE8\uAE09\uC744 \uD55C\uB2E4\uBA74, \uC774 \uC9C4\uC601\uC5D0 \uB0A8\uC544\uB0A0 \uC0AC\uB78C\uC774 \uBA87\uC774\uB098 \uB418\uACA0\uB098."
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  evidencePresentations:
+  - requiredClueId: clue_pangtong_night_visitor
+    buttonLabelOverride: 
+    reactionLines:
+    - speakerName: 
+      text: "\uADF8\uB0A0 \uBC24, \uAC15\uBCC0 \uCABD\uC73C\uB85C \uD63C\uC790 \uB098\uAC00\uC2DC\uB294 \uAC78 \uBD24\uB2E4\uB294 \uC790\uAC00 \uC788\uC2B5\uB2C8\uB2E4."
+    - speakerName: "\uBC29\uD1B5"
+      text: "...\uC7A0\uC774 \uC624\uC9C0 \uC54A\uC544 \uBC14\uB78C\uC744 \uC880 \uC408\uC744 \uBFD0\uC774\uB2E4. \uADF8\uAC8C \uC8C4\uAC00 \uB418\uB098?"
+    - speakerName: "\uBC29\uD1B5"
+      text: "\uBBFF\uAE30\uC9C0 \uC54A\uB294\uB2E4\uBA74, \uADF8 \uB4A4\uC5D0 \uACFD \uCC38\uBAA8\uC640 \uD568\uAED8 \uC788\uC5C8\uC73C\uB2C8 \uADF8\uC5D0\uAC8C \uBB3C\uC5B4\uBCF4\uAC8C. \uBC24\uC0C8 \uBCD1\uBC95\uC744 \uB17C\uD588\uC73C\uB2C8."
+    effects:
+    - type: 1
+      key: pangtong_alibi_lead
+    oneTimeOnly: 1

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9837e75e6400a419be66cd7a079d15, type: 3}
+  m_Name: Dialogue_Yuseong
+  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Dialogue.CharacterDialogueData
+  characterId: yuseong
+  displayName: "\uC720\uC131"
+  introLines:
+  - speakerName: "\uC720\uC131"
+    text: "\uC5B4\uC774, \uC790\uB124\uB3C4 \uADF8 \uC0AC\uAC74 \uB54C\uBB38\uC5D0 \uC815\uC2E0\uC5C6\uB098 \uBCF4\uAD70. \uB098\uB3C4 \uB9C8\uCC2C\uAC00\uC9C0\uC57C."
+  topics:
+  - topicId: ys_rivalry
+    buttonLabel: "\uACAC\uC81C/\uACBD\uC7C1"
+    visibilityConditions: []
+    lines:
+    - speakerName: "\uC720\uC131"
+      text: "\uB108\uBB34 \uD2F0 \uB098\uAC8C \uC5F4\uC2EC\uD788 \uD558\uC9C0\uB294 \uB9D0\uAC8C. \uACF5\uC744 \uC138\uC6B0\uACE0 \uC2F6\uC740 \uB9C8\uC74C\uC774\uC57C \uC774\uD574\uD558\uC9C0\uB9CC... \uB098\uB3C4 \uC9C0\uACE0 \uC2F6\uC9C0\uB294 \uC54A\uAC70\uB4E0."
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  - topicId: ys_leak
+    buttonLabel: "\uC815\uBCF4 \uC720\uCD9C \uCD94\uAD81"
+    visibilityConditions:
+    - type: 3
+      key: clue_yuseong_leaked_info
+    lines:
+    - speakerName: 
+      text: "\uC790\uB124, \uC218\uC0AC \uC815\uBCF4\uB97C \uB2E4\uB978 \uB370 \uD758\uB9AC\uACE0 \uB2E4\uB2CC\uB2E4\uB294 \uC598\uAE30\uAC00 \uC788\uB358\uB370."
+    - speakerName: "\uC720\uC131"
+      text: "(\uD0DC\uC5F0\uD558\uAC8C) \uAE00\uC384, \uB204\uAC00 \uADF8\uB7F0 \uB9D0\uC744 \uD558\uB358\uAC00? ...\uBB50, \uC2B9\uC0C1\uC758 \uB2E4\uB978 \uCE21\uADFC\uB4E4\uB3C4 \uC774 \uC0AC\uAC74\uC5D0 \uAD00\uC2EC\uC774 \uB9CE\uB2E4\uB294 \uAC83\uBFD0\uC774\uC9C0. \uB531\uD788 \uC228\uAE38 \uC77C\uB3C4 \uC544\uB2C8\uC9C0 \uC54A\uB098?"
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  evidencePresentations: []

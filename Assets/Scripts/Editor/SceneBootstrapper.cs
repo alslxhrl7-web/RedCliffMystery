@@ -43,6 +43,7 @@ namespace RedCliffMystery.EditorTools
 
         private const string DialogueFolder = "Assets/Data/Dialogue";
         private const string EndingFolder = "Assets/Data/Endings";
+        private const string CharactersFolder = "Assets/Characters";
 
         [MenuItem("적벽추리/플레이 가능한 씬 자동 생성")]
         public static void GenerateAll()
@@ -143,19 +144,32 @@ namespace RedCliffMystery.EditorTools
             player.AddComponent<SimplePlayerMover>();
             player.AddComponent<PlayerSaveData>();
 
-            var playerVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            playerVisual.name = "Visual";
-            playerVisual.transform.SetParent(player.transform, false);
-            playerVisual.transform.localPosition = new Vector3(0f, 1f, 0f);
-            Object.DestroyImmediate(playerVisual.GetComponent<Collider>());
-            SetPrimitiveColor(playerVisual, new Color(0.2f, 0.6f, 1f));
+            GameObject protagonistPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterModelPath("Protagonist.glb"));
+            GameObject playerVisual;
+            if (protagonistPrefab != null)
+            {
+                playerVisual = InstantiateGroundedModel(protagonistPrefab, player.transform);
+                playerVisual.name = "Visual";
+            }
+            else
+            {
+                playerVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                playerVisual.name = "Visual";
+                playerVisual.transform.SetParent(player.transform, false);
+                playerVisual.transform.localPosition = new Vector3(0f, 1f, 0f);
+                SetPrimitiveColor(playerVisual, new Color(0.2f, 0.6f, 1f));
+            }
+            foreach (var col in playerVisual.GetComponentsInChildren<Collider>(true))
+            {
+                Object.DestroyImmediate(col); // CharacterController가 이미 있으므로 비주얼 쪽 콜라이더는 제거
+            }
 
             // ---------------- 월드: NPC 5명 ----------------
-            CreateNpc("NPC_방통", new Vector3(-4f, 1f, 2f), "Dialogue_Pangtong.asset", new Color(0.9f, 0.8f, 0.3f));
-            CreateNpc("NPC_장간", new Vector3(-2f, 1f, 2f), "Dialogue_Jianggan.asset", new Color(0.7f, 0.6f, 0.9f));
-            CreateNpc("NPC_두석", new Vector3(0f, 1f, 2f), "Dialogue_Dusuk.asset", new Color(0.6f, 0.6f, 0.6f));
-            CreateNpc("NPC_설평", new Vector3(2f, 1f, 2f), "Dialogue_Seolpyeong.asset", new Color(0.9f, 0.9f, 0.9f));
-            CreateNpc("NPC_유성", new Vector3(4f, 1f, 2f), "Dialogue_Yuseong.asset", new Color(0.9f, 0.4f, 0.3f));
+            CreateNpc("NPC_방통", new Vector3(-4f, 1f, 2f), "Dialogue_Pangtong.asset", new Color(0.9f, 0.8f, 0.3f), "Pangtong.glb");
+            CreateNpc("NPC_장간", new Vector3(-2f, 1f, 2f), "Dialogue_Jianggan.asset", new Color(0.7f, 0.6f, 0.9f), "Jianggan.glb");
+            CreateNpc("NPC_두석", new Vector3(0f, 1f, 2f), "Dialogue_Dusuk.asset", new Color(0.6f, 0.6f, 0.6f), "Dusuk.glb");
+            CreateNpc("NPC_설평", new Vector3(2f, 1f, 2f), "Dialogue_Seolpyeong.asset", new Color(0.9f, 0.9f, 0.9f), "Seolpyeong.glb");
+            CreateNpc("NPC_유성", new Vector3(4f, 1f, 2f), "Dialogue_Yuseong.asset", new Color(0.9f, 0.4f, 0.3f), "Yuseong.glb");
 
             // ---------------- 월드: 최종 보고 트리거 ----------------
             var reportTrigger = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -189,15 +203,39 @@ namespace RedCliffMystery.EditorTools
             SetFieldList(endingManager, "endingsInPriorityOrder", list);
         }
 
-        private static void CreateNpc(string name, Vector3 position, string dialogueAssetFileName, Color color)
+        private static void CreateNpc(string name, Vector3 position, string dialogueAssetFileName, Color color, string modelFileName = null)
         {
-            var npc = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            npc.name = name;
-            npc.transform.position = position;
-            SetPrimitiveColor(npc, color);
+            GameObject modelPrefab = !string.IsNullOrEmpty(modelFileName)
+                ? AssetDatabase.LoadAssetAtPath<GameObject>(CharacterModelPath(modelFileName))
+                : null;
 
-            var collider = npc.GetComponent<Collider>();
-            collider.isTrigger = true;
+            GameObject npc;
+            if (modelPrefab != null)
+            {
+                // 실제 3D 캐릭터 모델(Rig + Animation 포함 glb) 사용.
+                // 콜라이더가 없는 모델이 대부분이므로 상호작용용 트리거 콜라이더를 별도로 붙인다.
+                npc = new GameObject(name);
+                npc.transform.position = new Vector3(position.x, 0f, position.z); // 바닥(y=0) 기준
+
+                InstantiateGroundedModel(modelPrefab, npc.transform);
+
+                var capsuleCollider = npc.AddComponent<CapsuleCollider>();
+                capsuleCollider.isTrigger = true;
+                capsuleCollider.center = new Vector3(0f, 1f, 0f);
+                capsuleCollider.height = 2f;
+                capsuleCollider.radius = 0.5f;
+            }
+            else
+            {
+                // 모델 애셋을 못 찾았을 때(글TF 임포트 전 등) 기존처럼 캡슐로 대신한다.
+                npc = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                npc.name = name;
+                npc.transform.position = position;
+                SetPrimitiveColor(npc, color);
+
+                var collider = npc.GetComponent<Collider>();
+                collider.isTrigger = true;
+            }
 
             var data = AssetDatabase.LoadAssetAtPath<CharacterDialogueData>(DialogueDataBootstrapper.DialogueAssetPath(dialogueAssetFileName));
             if (data == null)
@@ -207,6 +245,32 @@ namespace RedCliffMystery.EditorTools
 
             var interactable = npc.AddComponent<NPCInteractable>();
             SetField(interactable, "dialogueData", data);
+        }
+
+        /// <summary>Assets/Characters 폴더 안의 캐릭터 모델(glb) 애셋 경로를 만든다.</summary>
+        private static string CharacterModelPath(string fileName) => $"{CharactersFolder}/{fileName}";
+
+        /// <summary>
+        /// 캐릭터 모델 프리팹을 parent 아래에 배치하고, 렌더러 바운드를 계산해 발바닥이 월드 y=0(바닥)에
+        /// 닿도록 높이를 보정한다. glb 내보내기 시 피벗 위치가 통일되어 있지 않아도 안전하게 동작한다.
+        /// </summary>
+        private static GameObject InstantiateGroundedModel(GameObject prefab, Transform parent)
+        {
+            var visual = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localRotation = Quaternion.identity;
+
+            var renderers = visual.GetComponentsInChildren<Renderer>();
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+
+                const float groundWorldY = 0f;
+                visual.transform.position += new Vector3(0f, groundWorldY - bounds.min.y, 0f);
+            }
+
+            return visual;
         }
 
         // ====================================================================

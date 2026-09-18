@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e9837e75e6400a419be66cd7a079d15, type: 3}
+  m_Name: Dialogue_Dusuk
+  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Dialogue.CharacterDialogueData
+  characterId: dusuk
+  displayName: "\uB450\uC11D"
+  introLines:
+  - speakerName: "\uB450\uC11D"
+    text: "(\uBD80\uB3D9\uC790\uC138, \uAE34\uC7A5\uD55C \uAE30\uC0C9) \uCDA9\uC131. \uADF8\uB0A0 \uBC24 \uADFC\uBB34\uC5D0 \uB300\uD574 \uBB3C\uC73C\uC2E4 \uAC70\uB77C\uBA74... \uC774\uC0C1 \uC5C6\uC5C8\uC2B5\uB2C8\uB2E4."
+  topics:
+  - topicId: ds_night
+    buttonLabel: "\uADF8\uB0A0 \uBC24 \uACBD\uBE44 \uC0C1\uD669"
+    visibilityConditions: []
+    lines:
+    - speakerName: 
+      text: "\uADF8\uB0A0 \uBC24 \uBB38\uC11C\uACE0 \uC55E\uC744 \uACC4\uC18D \uC9C0\uD0A4\uACE0 \uC788\uC5C8\uB098?"
+    - speakerName: "\uB450\uC11D"
+      text: "\uC608, \uC608. \uD55C\uC2DC\uB3C4 \uC790\uB9AC\uB97C \uBE44\uC6B0\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  - topicId: ds_gambling
+    buttonLabel: "\uB3C4\uBC15 \uBE5A \uC18C\uBB38"
+    visibilityConditions:
+    - type: 3
+      key: clue_dusuk_gambling_debt
+    lines:
+    - speakerName: 
+      text: "\uC694\uC998 \uB3C4\uBC15 \uBE5A \uB54C\uBB38\uC5D0 \uACE4\uB780\uD558\uB2E4\uB294 \uC598\uAE30\uB97C \uB4E4\uC5C8\uB294\uB370."
+    - speakerName: "\uB450\uC11D"
+      text: "(\uD45C\uC815 \uAD73\uC74C) ...\uB204\uAC00 \uADF8\uB7F0 \uD5DB\uC18C\uBB38\uC744! \uADFC\uBB34\uC640\uB294 \uC0C1\uAD00\uC5C6\uB294 \uC77C\uC785\uB2C8\uB2E4."
+    effectsOnFirstView: []
+    hideAfterFirstView: 0
+  - topicId: ds_confession
+    buttonLabel: "\uC2E4\uD1A0"
+    visibilityConditions:
+    - type: 1
+      key: dusuk_pressed
+    lines:
+    - speakerName: "\uB450\uC11D"
+      text: "\uC7A0\uAE50, \uC544\uC8FC \uC7A0\uAE50... \uBC18 \uC2DC\uC9C4 \uC815\uB3C4 \uC790\uB9AC\uB97C \uBE44\uC6E0\uC2B5\uB2C8\uB2E4. \uB178\uB984\uD310\uC5D0 \uAEF4 \uC788\uB290\uB77C... \uADF8\uAC83 \uB54C\uBB38\uC5D0 \uADFC\uBB34 \uC77C\uC9C0\uB97C \uC190\uBD24\uC2B5\uB2C8\uB2E4."
+    - speakerName: "\uB450\uC11D"
+      text: "\uBB38\uC11C \uB3C4\uB09C\uACFC\uB294 \uC804\uD600 \uC0C1\uAD00\uC5C6\uB294 \uC77C\uC785\uB2C8\uB2E4! \uADF8\uAC83\uB9CC\uC740 \uBBFF\uC5B4\uC8FC\uC2ED\uC2DC\uC624..."
+    effectsOnFirstView:
+    - type: 3
+      key: clue_dusuk_confession
+    - type: 1
+      key: dusuk_cleared
+    hideAfterFirstView: 0
+  evidencePresentations:
+  - requiredClueId: clue_dusuk_false_alibi
+    buttonLabelOverride: 
+    reactionLines:
+    - speakerName: 
+      text: "\uADFC\uBB34 \uC77C\uC9C0\uC640 \uB2E4\uB978 \uBCD1\uC0AC\uB4E4\uC758 \uC99D\uC5B8\uC774 \uC11C\uB85C \uC5B4\uAE0B\uB098\uB358\uB370. \uC815\uB9D0 \uD55C\uC2DC\uB3C4 \uC790\uB9AC\uB97C \uBE44\uC6B0\uC9C0 \uC54A\uC558\uB098?"
+    - speakerName: "\uB450\uC11D"
+      text: "(\uCE68\uBB35) ..."
+    - speakerName: "\uB450\uC11D"
+      text: "...\uC8C4\uC1A1\uD569\uB2C8\uB2E4. \uC0AC\uC2E4\uC740..."
+    effects:
+    - type: 1
+      key: dusuk_pressed
+    oneTimeOnly: 1

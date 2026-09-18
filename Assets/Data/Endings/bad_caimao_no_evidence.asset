@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fead04e32e62d148a3836b94a3f51dd, type: 3}
+  m_Name: bad_caimao_no_evidence
+  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Ending.EndingDefinition
+  endingId: bad_caimao_no_evidence
+  endingType: 0
+  title: "\uBC30\uB4DC \uC5D4\uB529 \u2014 \uC131\uAE09\uD55C \uD310\uB2E8"
+  bodyText: "\uC99D\uAC70 \uD558\uB098 \uC5C6\uC774 \uCC44\uBAA8\uC640 \uC7A5\uC724\uC744 \uC9C0\uBAA9\uD588\uB2E4. \uC870\uC870\uB294 \uADFC\uAC70 \uC5C6\uB294 \uC758\uC2EC\uB9CC\uC73C\uB85C \uC0AC\uB78C\uC744 \uB2E8\uC8C4\uD560 \uC218 \uC5C6\uB2E4\uBA70, \uADF8 \uC790\uB9AC\uC5D0\uC11C \uC870\uC0AC \uC784\uBB34\uB97C \uAC70\uB450\uC5B4\uB4E4\uC600\uB2E4."
+  backgroundImage: {fileID: 0}
+  conditions:
+  - type: 0
+    key: accused_caimao_no_evidence
+    intValue: 0
